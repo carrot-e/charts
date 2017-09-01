@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { D3Service } from 'd3-ng2-service';
 import { BudgetComponent } from './budget/budget.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { BudgetComponent } from './budget/budget.component';
     BudgetComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [D3Service],
   bootstrap: [AppComponent]
