@@ -1,8 +1,8 @@
-import {Component, ElementRef, OnInit} from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { D3Service, D3 } from 'd3-ng2-service';
-import { HttpClient } from "@angular/common/http";
-import {HierarchyCircularNode, HierarchyPointNode} from "d3-hierarchy";
-import {BudgetItem} from "../budget-item";
+import { HttpClient } from '@angular/common/http';
+import { HierarchyCircularNode } from 'd3-hierarchy';
+import { BudgetItem } from '../budget-item';
 
 
 @Component({
@@ -14,18 +14,15 @@ export class BudgetComponent implements OnInit {
   private d3: D3;
   private parentNativeElement: any;
 
-
   constructor(element: ElementRef, d3Service: D3Service, private http: HttpClient) {
     this.d3 = d3Service.getD3();
     this.parentNativeElement = element.nativeElement;
   }
 
   ngOnInit() {
-    const d3 = this.d3;
-
-    this.http.get('/assets/budget-2017.csv', {responseType: 'text'}).subscribe(data => {
+   this.http.get('/assets/budget-2017.csv', {responseType: 'text'}).subscribe(data => {
       // Read the result field from the JSON response.
-      this.render(d3.csvParse(data))
+      this.render(this.d3.csvParse(data));
     });
   }
 
@@ -63,19 +60,19 @@ export class BudgetComponent implements OnInit {
       .data(pack(root).descendants())
       .enter()
       .append('g')
-      .attr('class', (d:HierarchyCircularNode<BudgetItem>) => d.children ? 'node' : 'leaf node')
-      .attr('transform', (d:HierarchyCircularNode<BudgetItem>) => `translate(${d.x}, ${d.y})`);
+      .attr('class', (d: HierarchyCircularNode<BudgetItem>) => d.children ? 'node' : 'leaf node')
+      .attr('transform', (d: HierarchyCircularNode<BudgetItem>) => `translate(${d.x}, ${d.y})`);
 
     node.append('circle')
-      .attr('r', (d:HierarchyCircularNode<BudgetItem>) => d.r);
+      .attr('r', (d: HierarchyCircularNode<BudgetItem>) => d.r);
 
     node.append('title')
-      .text((d:HierarchyCircularNode<BudgetItem>) => `${d.data.title}\n${d.value}`);
+      .text((d: HierarchyCircularNode<BudgetItem>) => `${d.data.title}\n${d.value}`);
 
-    node.filter((d:HierarchyCircularNode<BudgetItem>) => !d.children)
+    node.filter((d: HierarchyCircularNode<BudgetItem>) => !d.children)
       .append('text')
       .attr('dy', '0.3em')
-      .text((d:HierarchyCircularNode<BudgetItem>) => d.data.title.substring(0, d.r / 3));
+      .text((d: HierarchyCircularNode<BudgetItem>) => d.data.title.substring(0, d.r / 3));
   }
 
 }
