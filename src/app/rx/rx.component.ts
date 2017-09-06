@@ -12,6 +12,30 @@ export class RxComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    // this.fromEvents();
+    this.fromArrays();
+  }
+
+  fromArrays() {
+    const numbers = [22, 33, 44, 55, 77];
+    const numbers$ = Observable.from(numbers);
+    numbers$.subscribe(
+      (v) => console.log(v),
+      (error) => console.error(error),
+      () => console.log('complete')
+    );
+
+    const posts = [
+      {title: 'title 1', body: 'body 1'},
+      {title: 'title 2', body: 'body 2'},
+      {title: 'title 3', body: 'body 3'},
+    ];
+
+    Observable.from(posts)
+      .subscribe(v => console.log(v));
+  }
+
+  fromEvents() {
     const btnStream$ = Observable.fromEvent(this.button.nativeElement, 'click');
     btnStream$.subscribe(
       (e) => console.log(e),
