@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  display: flex;
+}
+app-root {
+  margin: auto;
+}
+h1 {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.budget .node circle {
+  fill: white;
+}
+
+.budget .node.leaf circle {
+  fill: #5998C5;
+}
+
+.budget text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+  fill: white;
+}
+
+.realtime .circles-group rect {
+  fill: #5998C5;
+}
+

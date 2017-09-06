@@ -11,14 +11,24 @@ export class RealtimeComponent implements OnInit {
   private d3: D3;
   private parentNativeElement: any;
   private svg;
-  private min = 0;
-  private max = 100;
+  private minX = 0;
+  private maxX = 10;
+  private minY = 0;
+  private maxY = 100;
+  private dt = 500;
 
-  private margin = {top: 0, right: 0, bottom: 0, left: 0};
+  private margin = {top: 10, right: 10, bottom: 20, left: 30};
   private fullWidth = 600;
   private fullHeight = 600;
   private width = this.fullWidth - this.margin.left - this.margin.right;
   private height = this.fullHeight - this.margin.top - this.margin.bottom;
+
+  private xScale;
+  private yScale;
+
+  private clock$;
+  public isOn = true;
+
 
   @ViewChild('chart') chart;
 
@@ -29,43 +39,88 @@ export class RealtimeComponent implements OnInit {
 
   ngOnInit() {
     this.renderBase();
-    // Observable.interval(10000)
-    //   .map((i: number) => Math.floor(Math.random() * (this.max - this.min)) + this.min)
-    //   .subscribe(d => console.log(d));
+
+    this.clock$ = Observable.create(observer => {
+      const that = this;
+      let timeout,
+        i = 0;
+
+      (function push() {
+        timeout = setTimeout(() => {
+          if (that.isOn) {
+            observer.next(i++);
+          }
+          push();
+        }, that.dt);
+      })();
+
+      return () => clearTimeout(timeout);
+    })
+      .map((i: number) => {
+        return {i, v: Math.floor(Math.random() * (this.maxY - this.minY)) + this.minY};
+      })
+      .subscribe((d) => this.renderTick(d));
+  }
+
+  control() {
+    this.isOn = !this.isOn;
+  }
+
+  renderTick({i, v}) {
+    this.d3
+      .select('.circles-group')
+      .transition()
+      .duration(this.dt)
+      .ease(this.d3.easeLinear)
+      .attr('transform', `translate(${-i * this.xScale(this.minX + 1) + this.xScale(this.maxX)})`);
+
+    this.d3.select('.circles-group').append('rect')
+      .attr('x', this.xScale(i))
+      .attr('y', this.yScale(v))
+      .attr('width', 10)
+      .attr('height', this.height - this.yScale(v));
+
+    if (i > this.maxX) {
+      this.d3
+        .select('.circles-group rect:first-child')
+        .remove();
+    }
   }
 
   renderBase() {
     this.svg = this.d3.select(this.chart.nativeElement)
       .append('svg')
-        .attr('width', this.fullWidth)
-        .attr('height', this.fullHeight)
-        .call(this.responsivefy, this.d3)
+      .attr('width', this.fullWidth)
+      .attr('height', this.fullHeight)
+      .call(this.responsivefy, this.d3)
       .append('g')
-        .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
+      .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
 
     const d3 = this.d3;
 
-    const yScale = d3.scaleLinear()
-      .domain([this.min, this.max])
+    this.yScale = d3.scaleLinear()
+      .domain([this.minY, this.maxY])
       .range([this.height, 0]);
 
-    const yAxis = d3.axisLeft(yScale);
+    const yAxis = d3.axisLeft(this.yScale);
     this.svg.call(yAxis);
 
-    const xScale = d3.scaleTime()
-      .domain([new Date(2016, 0, 1, 6), new Date(2016, 0, 1, 9)])
+    this.xScale = d3.scaleLinear()
+      .domain([this.minX, this.maxX])
       .range([0, this.width]);
 
-    const xAxis = d3.axisBottom(xScale)
-      .ticks(d3.timeMinute.every(45))
-      .tickSizeInner(10)
-      .tickSizeOuter(20)
-      .tickPadding(10);
+    const xAxis = d3.axisBottom(this.xScale)
+      .ticks(this.maxX);
 
     this.svg
       .append('g')
       .attr('transform', `translate(0, ${this.height})`)
       .call(xAxis);
+
+    this.svg
+      .append('g')
+      .attr('class', 'circles-group')
+      .attr('transform', `translate(${this.xScale(this.maxX)})`);
   }
 
   private responsivefy(svg, d3) {
@@ -96,6 +151,4 @@ export class RealtimeComponent implements OnInit {
       svg.attr('height', Math.round(targetWidth / aspect));
     }
   }
-
-
 }
