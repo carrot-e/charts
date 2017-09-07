@@ -1,5 +1,6 @@
 import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import { Observable } from 'rxjs/Rx';
+import {reject} from "q";
 
 @Component({
   selector: 'app-rx',
@@ -14,7 +15,19 @@ export class RxComponent implements OnInit {
   ngOnInit() {
     // this.fromEvents();
     // this.fromArrays();
-    this.fromScratch();
+    // this.fromScratch();
+    this.fromPromise();
+  }
+
+  fromPromise() {
+    const myPromise = new Promise(resolve => {
+      console.log('creating promise');
+      setTimeout(() => resolve('Hello from promise'), 3000);
+    });
+
+    // myPromise.then((i) => console.log(i));
+    Observable.fromPromise(myPromise)
+      .subscribe((i) => console.log(i));
   }
 
   fromScratch() {
