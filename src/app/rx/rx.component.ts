@@ -13,7 +13,30 @@ export class RxComponent implements OnInit {
 
   ngOnInit() {
     // this.fromEvents();
-    this.fromArrays();
+    // this.fromArrays();
+    this.fromScratch();
+  }
+
+  fromScratch() {
+    const source$ = new Observable(observer => {
+      console.log('creating');
+      observer.next('hello');
+
+      observer.error(new Error('Smth wrong'));
+
+      setTimeout(() => observer.complete(), 1000);
+    });
+    source$
+      .catch(error => {
+        console.log('caught an error!');
+        return Observable.of(error);
+      })
+      .finally(() => console.log('finally'))
+      .subscribe(
+      i => console.log(i),
+      error => console.warn(error),
+      () => console.log('complete')
+    );
   }
 
   fromArrays() {
