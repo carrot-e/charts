@@ -16,7 +16,38 @@ export class RxComponent implements OnInit {
     // this.fromEvents();
     // this.fromArrays();
     // this.fromScratch();
-    this.fromPromise();
+    // this.fromPromise();
+
+    this.operations();
+  }
+
+  operations() {
+    // Observable.of('Hello')
+    //   .merge(Observable.of([1, 2, 3]))
+    //   .subscribe(console.log);
+
+    // Observable.interval(2000)
+    //   .merge(Observable.interval(500))
+    //   .take(25)
+    //   .subscribe(console.log);
+
+    // const source1$ = Observable.interval(2000)
+    //   .map(v => `Source 1: ${v}`);
+    // const source2$ = Observable.interval(500)
+    //   .map(v => `Source 2: ${v}`);
+    //
+    // Observable.merge(source1$, source2$)
+    //   .take(10)
+    //   .subscribe(console.log);
+
+    const source1$ = Observable.range(5, 2)
+      .map(v => `Source 1: ${v}`);
+    const source2$ = Observable.range(6, 5)
+      .map(v => `Source 2: ${v}`);
+
+    Observable.concat(source1$, source2$)
+      .subscribe(console.log);
+
   }
 
   fromPromise() {

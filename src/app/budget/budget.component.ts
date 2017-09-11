@@ -46,6 +46,7 @@ export class BudgetComponent implements OnInit {
     data = {name: 'total', children: data};
 
     const svg = d3.select(this.parentNativeElement)
+      .select('.budget')
       .append('svg')
           .attr('width', width + margin.left + margin.right)
           .attr('height', height + margin.top + margin.bottom)

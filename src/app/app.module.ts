@@ -7,7 +7,18 @@ import { BudgetComponent } from './budget/budget.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { RxComponent } from './rx/rx.component';
+import {RouterModule, Routes} from '@angular/router';
 
+const routes: Routes = [
+  { path: 'budget', component: BudgetComponent },
+  { path: 'realtime', component: RealtimeComponent },
+  { path: 'rx', component: RxComponent },
+  {
+    path: '',
+    redirectTo: '/budget',
+    pathMatch: 'full'
+  }
+];
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,6 +27,7 @@ import { RxComponent } from './rx/rx.component';
     RxComponent
   ],
   imports: [
+    RouterModule.forRoot(routes),
     BrowserModule,
     HttpClientModule
   ],
