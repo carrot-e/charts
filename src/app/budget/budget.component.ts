@@ -1,9 +1,8 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { D3Service, D3 } from 'd3-ng2-service';
 import { HttpClient } from '@angular/common/http';
-import { HierarchyCircularNode } from 'd3-hierarchy';
 import { BudgetItem } from '../budget-item';
-
+import { TooltipStateService } from '../tooltip-state.service';
 
 @Component({
   selector: 'app-budget',
@@ -14,14 +13,18 @@ export class BudgetComponent implements OnInit {
   private d3: D3;
   private parentNativeElement: any;
 
-  constructor(element: ElementRef, d3Service: D3Service, private http: HttpClient) {
+  constructor(
+    element: ElementRef,
+    d3Service: D3Service,
+    private http: HttpClient,
+    private tooltipState: TooltipStateService
+  ) {
     this.d3 = d3Service.getD3();
     this.parentNativeElement = element.nativeElement;
   }
 
   ngOnInit() {
-   this.http.get('/assets/budget-2017.csv', {responseType: 'text'}).subscribe(data => {
-      // Read the result field from the JSON response.
+    this.http.get('/assets/budget-2017.csv', {responseType: 'text'}).subscribe(data => {
       this.render(this.d3.csvParse(data));
     });
   }
@@ -33,47 +36,88 @@ export class BudgetComponent implements OnInit {
     const fullHeight = 600;
     const width = fullWidth - margin.left - margin.right;
     const height = fullHeight - margin.top - margin.bottom;
-
-    const pack = d3.pack()
-      .size([width, width])
-      .padding(5);
+    const forceStrength = 0.05;
 
     data.map(i => {
-      i.amount = +i.amount;
+      i.amount = +i.amount2017;
       return i;
     });
-
-    data = {name: 'total', children: data};
 
     const svg = d3.select(this.parentNativeElement)
       .select('.budget')
       .append('svg')
-          .attr('width', width + margin.left + margin.right)
-          .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-          .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-    const root = d3.hierarchy(data)
-      .sum((d) => d.amount)
-      .sort((a, b) => b.value - a.value);
-
-    const node = svg.selectAll('.node')
-      .data(pack(root).descendants())
-      .enter()
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
       .append('g')
-      .attr('class', (d: HierarchyCircularNode<BudgetItem>) => d.children ? 'node' : 'leaf node')
-      .attr('transform', (d: HierarchyCircularNode<BudgetItem>) => `translate(${d.x}, ${d.y})`);
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-    node.append('circle')
-      .attr('r', (d: HierarchyCircularNode<BudgetItem>) => d.r);
 
-    node.append('title')
-      .text((d: HierarchyCircularNode<BudgetItem>) => `${d.data.title}\n${d.value}`);
+    const simulation = d3.forceSimulation()
+      .velocityDecay(0.15)
+      .force('x', d3.forceX().strength(forceStrength).x(width / 2))
+      .force('y', d3.forceY().strength(forceStrength).y(height / 2))
+      .force('charge', d3.forceManyBody().strength((d: any) => -Math.pow(d.radius, 2.0) / 20))
+      .on('tick', ticked);
 
-    node.filter((d: HierarchyCircularNode<BudgetItem>) => !d.children)
-      .append('text')
-      .attr('dy', '0.3em')
-      .text((d: HierarchyCircularNode<BudgetItem>) => d.data.title.substring(0, d.r / 3));
+    simulation.stop();
+    const nodes = this.getNodes(data, width, height);
+    let bubbles = svg.selectAll('.bubble')
+      .data(nodes);
+
+    const colorScale = d3.scaleOrdinal()
+      .range(['#ff4632', '#c3f1b9'])
+      .domain(['lt', 'gt']);
+
+    const bubblesE = bubbles.enter().append('circle')
+      .classed('bubble', true)
+      .attr('r', 0)
+      .attr('fill', (d: any) => colorScale(d.diff).toString())
+      .attr('stroke', (d: any) => d3.rgb(colorScale(d.diff).toString()).darker().toString())
+      .on('mouseover', (d, i, all) => {
+        d3.select(all[i]).style('stroke', '#333');
+        this.tooltipState.show(d, d3.event);
+      })
+      .on('mouseout', (d, i, all) => {
+        d3.select(all[i]).style('stroke', null);
+        this.tooltipState.hide();
+      });
+
+    bubbles = bubbles.merge(bubblesE);
+    bubbles.transition()
+      .duration(500)
+      .attr('r', (d: any) => d.radius);
+
+    simulation.nodes(nodes);
+    simulation.alpha(0.5).restart();
+
+    function ticked() {
+      bubbles
+        .attr('cx', (d: any) => d.x)
+        .attr('cy', (d: any) => d.y);
+    }
   }
 
+  private getNodes(data, width, height) {
+    const d3 = this.d3;
+    const maxAmount = +d3.max(data, (d: BudgetItem) => d.amount);
+    const minAmount = +d3.min(data, (d: BudgetItem) => d.amount);
+    const total2017 = d3.sum(data, (d: BudgetItem) => d.amount2017);
+    const total2016 = d3.sum(data, (d: BudgetItem) => d.amount2016);
+    const radiusScale = d3.scalePow()
+      .exponent(0.5)
+      .range([2, 85])
+      .domain([minAmount, maxAmount]);
+
+    data.sort((a, b) => b.amount - a.amount);
+
+    return data.map(d => ({
+      title: d.title,
+      amount: d.amount,
+      radius: radiusScale(d.amount),
+      x: Math.random() * width,
+      y: Math.random() * height,
+      diff: d.amount / total2017 > d.amount2016 / total2016 ? 'gt' : 'lt',
+      diffPercents: (d.amount / total2017 - d.amount2016 / total2016) * 100
+    }));
+  }
 }

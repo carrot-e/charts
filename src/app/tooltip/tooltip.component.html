@@ -1,0 +1,7 @@
+<div class="tooltip" *ngIf="state.isVisible" [style]="style">
+  <h2 class="title">{{ state?.title }}</h2>
+  <span class="amount">{{ state?.amount }} млн грн</span>
+  <span [class]="'diff ' + (state?.diffPercents > 0 ? 'positive': 'negative')">
+    {{ state?.diffPercents | number : '1.2-2' }}%
+  </span>
+</div>

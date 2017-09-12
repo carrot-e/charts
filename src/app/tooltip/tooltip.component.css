@@ -1,0 +1,30 @@
+.tooltip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, .85);
+  width: 200px;
+  position: absolute;
+  font-family: sans-serif;
+  padding: 10px;
+  box-shadow: -1px 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  margin-top: 0;
+  font-size: 1.2rem;
+  border-bottom: 1px solid dimgrey;
+}
+.amount {
+  font-weight: 700;
+}
+.diff {
+  text-align: right;
+}
+.diff.positive {
+  color: #89a982;
+}
+.diff.negative {
+  color: #ff4632;
+}
+

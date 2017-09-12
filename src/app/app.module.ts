@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RealtimeComponent } from './realtime/realtime.component';
 import { RxComponent } from './rx/rx.component';
 import {RouterModule, Routes} from '@angular/router';
+import { TooltipComponent } from './tooltip/tooltip.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -24,7 +25,8 @@ const routes: Routes = [
     AppComponent,
     BudgetComponent,
     RealtimeComponent,
-    RxComponent
+    RxComponent,
+    TooltipComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

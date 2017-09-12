@@ -18,6 +18,12 @@ h1 {
   fill: #5998C5;
 }
 
+.budget .bubble {
+  fill-opacity: 0.85;
+  stroke-opacity: 0.85;
+  stroke-width: 2;
+}
+
 .budget text {
   font: 10px sans-serif;
   text-anchor: middle;
