@@ -9,11 +9,13 @@ import { RealtimeComponent } from './realtime/realtime.component';
 import { RxComponent } from './rx/rx.component';
 import {RouterModule, Routes} from '@angular/router';
 import { TooltipComponent } from './tooltip/tooltip.component';
+import { PopulationComponent } from './population/population.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
   { path: 'realtime', component: RealtimeComponent },
   { path: 'rx', component: RxComponent },
+  { path: 'population', component: PopulationComponent },
   {
     path: '',
     redirectTo: '/budget',
@@ -26,7 +28,8 @@ const routes: Routes = [
     BudgetComponent,
     RealtimeComponent,
     RxComponent,
-    TooltipComponent
+    TooltipComponent,
+    PopulationComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

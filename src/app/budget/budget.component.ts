@@ -61,14 +61,15 @@ export class BudgetComponent implements OnInit {
 
     simulation.stop();
     const nodes = this.getNodes(data, width, height);
-    let bubbles = svg.selectAll('.bubble')
-      .data(nodes);
 
     const colorScale = d3.scaleOrdinal()
       .range(['#ff4632', '#c3f1b9'])
       .domain(['lt', 'gt']);
 
-    const bubblesE = bubbles.enter().append('circle')
+    const bubbles = svg.selectAll('.bubble')
+      .data(nodes)
+      .enter()
+      .append('circle')
       .classed('bubble', true)
       .attr('r', 0)
       .attr('fill', (d: any) => colorScale(d.diff).toString())
@@ -80,10 +81,20 @@ export class BudgetComponent implements OnInit {
       .on('mouseout', (d, i, all) => {
         d3.select(all[i]).style('stroke', null);
         this.tooltipState.hide();
+      })
+      .on('click', (d: BudgetItem) => {
+        this.tooltipState.hide();
+        simulation.force('x', d3.forceX().strength(forceStrength).x((dd: BudgetItem) => {
+          if (d.title === dd.title) {
+            return width / 3 * 2;
+          }
+          return width / 3;
+        }));
+        simulation.alpha(0.5).restart();
       });
 
-    bubbles = bubbles.merge(bubblesE);
-    bubbles.transition()
+    bubbles
+      .transition()
       .duration(500)
       .attr('r', (d: any) => d.radius);
 
