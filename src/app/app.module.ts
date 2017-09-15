@@ -10,6 +10,8 @@ import { RxComponent } from './rx/rx.component';
 import {RouterModule, Routes} from '@angular/router';
 import { TooltipComponent } from './tooltip/tooltip.component';
 import { PopulationComponent } from './population/population.component';
+import { SvgBaseComponent } from './svg-base/svg-base.component';
+import { ForceSimulationDirective } from './force-simulation.directive';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -29,7 +31,9 @@ const routes: Routes = [
     RealtimeComponent,
     RxComponent,
     TooltipComponent,
-    PopulationComponent
+    PopulationComponent,
+    SvgBaseComponent,
+    ForceSimulationDirective
   ],
   imports: [
     RouterModule.forRoot(routes),
