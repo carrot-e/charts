@@ -12,6 +12,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
 import { PopulationComponent } from './population/population.component';
 import { SvgBaseComponent } from './svg-base/svg-base.component';
 import { ForceSimulationDirective } from './force-simulation.directive';
+import { BudgetLegendComponent } from './budget-legend/budget-legend.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
     TooltipComponent,
     PopulationComponent,
     SvgBaseComponent,
-    ForceSimulationDirective
+    ForceSimulationDirective,
+    BudgetLegendComponent
   ],
   imports: [
     RouterModule.forRoot(routes),

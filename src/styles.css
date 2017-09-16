@@ -26,8 +26,8 @@ h1 {
 
 .budget text {
   font: 10px sans-serif;
-  text-anchor: middle;
-  fill: white;
+  /*text-anchor: middle;*/
+  /*fill: white;*/
 }
 
 .realtime .circles-group rect {

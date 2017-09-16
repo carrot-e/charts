@@ -8,9 +8,9 @@ import {Component, Input, OnInit} from '@angular/core';
 export class SvgBaseComponent implements OnInit {
   public transform: string;
 
-  @Input('width') width: number;
-  @Input('height') height: number;
-  @Input('margin') margin: any;
+  @Input('width') width = 0;
+  @Input('height') height = 0;
+  @Input('margin') margin = {top: 0, right: 0, bottom: 0, left: 0};
 
   constructor() {}
 

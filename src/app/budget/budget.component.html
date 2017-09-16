@@ -5,6 +5,13 @@
                 [nodes]="nodes"
                 [height]="chartHeight"
                 [width]="chartWidth"
-                [margin]="chartMargin">
+                [margin]="chartMargin"
+                [colorScale]="colorScale">
   </app-svg-base>
+  <app-budget-legend
+    [width]="chartWidth"
+    [height]="200"
+    [margin]="chartMargin"
+    [colorScale]="colorScale"
+  ></app-budget-legend>
 </div>

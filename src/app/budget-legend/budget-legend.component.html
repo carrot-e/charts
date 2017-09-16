@@ -1,0 +1,10 @@
+<app-svg-base xmlns:svg xmlns:svg="http://www.w3.org/1999/html" [width]="width" [height]="height" [margin]="margin">
+  <svg:g class="legend">
+    <svg:g class="legend-colors-description" *ngFor="let color of colorScale.range(); let i = index">
+      <svg:circle r="10" [attr.fill]="color" cx="20" [attr.cy]="20 + 30 * i" />
+      <svg:g class="legend-colors">
+        <svg:text dx="40" [attr.dy]="22.5 + 30 * i">{{ texts[i] }}</svg:text>
+      </svg:g>
+    </svg:g>
+  </svg:g>
+</app-svg-base>

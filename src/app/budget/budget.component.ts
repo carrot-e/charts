@@ -12,9 +12,12 @@ export class BudgetComponent implements OnInit {
   private parentNativeElement: any;
 
   public chartWidth = 600;
-  public chartHeight = 600;
+  public chartHeight = 400;
   public chartMargin = {top: 0, right: 0, bottom: 0, left: 0};
   public nodes;
+  public colorScale = d3.scaleOrdinal()
+    .range(['#ff4632', '#c3f1b9'])
+    .domain(['lt', 'gt']);
 
   constructor(
     element: ElementRef,

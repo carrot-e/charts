@@ -14,9 +14,7 @@ export class ForceSimulationDirective implements OnChanges, AfterContentInit {
   @Input('width') width;
   @Input('height') height;
   @Input('nodes') nodes;
-  @Input('colorScale') colorScale = d3.scaleOrdinal()
-    .range(['#ff4632', '#c3f1b9'])
-    .domain(['lt', 'gt']);
+  @Input('colorScale') colorScale;
 
   constructor(
     private tooltipState: TooltipStateService,
