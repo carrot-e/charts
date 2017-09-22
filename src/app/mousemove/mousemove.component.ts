@@ -8,20 +8,22 @@ import {Observable} from 'rxjs/Observable';
 })
 export class MousemoveComponent implements OnInit {
 
-  public data = [];
+  public data;
   constructor(private el: ElementRef) { }
 
   ngOnInit() {
     Observable.fromEvent(this.el.nativeElement, 'mousemove')
       .debounceTime(10)
       .subscribe((e: any) => {
-        this.data.push({
+        this.data = {
           x: e.offsetX ? e.offsetX : e.layerX,
           y: e.offsetY ? e.offsetY : e.layerY
-        });
+        };
+
+
 
         // We need to clone the array to trigger the changes handler
-        this.data = this.data.slice();
+        // this.data = this.data.slice();
       });
   }
 }
