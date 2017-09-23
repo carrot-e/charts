@@ -1,5 +1,5 @@
 import {
-  AfterContentInit, AfterViewInit, Directive, ElementRef, Input, OnChanges, Renderer2,
+  AfterViewInit, Directive, ElementRef, Input, OnChanges, Renderer2,
   SimpleChanges
 } from '@angular/core';
 import * as d3 from 'd3';
@@ -17,6 +17,7 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
   private shadowCanvas;
   private colorScale;
+  private valueScale;
 
 
   @Input('point') point;
@@ -33,7 +34,6 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
 
     const canvas = this.canvas = this.renderer.createElement('canvas');
     this.renderer.appendChild(wrapper, canvas);
-    this.renderer.appendChild(wrapper, this.shadowCanvas);
 
     this.renderer.appendChild(this.el.nativeElement, wrapper);
     this.setWrapperProps();
@@ -82,7 +82,10 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
     this.clear();
     const image = this.context.createImageData(this.width, this.height);
 
-    for (let i = 0; i < alphaData.length; i += 8) {
+    for (let i = 0; i < alphaData.length; i += 4) {
+      if (!alphaData[i + 3]) {
+        continue;
+      }
       const c = d3.rgb(this.getColorScale()(alphaData[i + 3]));
 
       image.data[i] = c.r;
@@ -109,9 +112,15 @@ export class HeatmapDirective implements AfterViewInit, OnChanges {
   }
 
   getValueScale() {
-    return d3.scaleLinear()
+    if (this.valueScale) {
+      return this.valueScale;
+    }
+
+    this.valueScale = d3.scaleLinear()
       .domain([0, 10])
       .range([0, 1]);
+
+    return this.valueScale;
   }
 
   getAlpha(point) {

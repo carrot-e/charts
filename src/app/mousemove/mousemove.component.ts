@@ -1,5 +1,5 @@
-import {Component, ElementRef, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-mousemove',
@@ -13,17 +13,12 @@ export class MousemoveComponent implements OnInit {
 
   ngOnInit() {
     Observable.fromEvent(this.el.nativeElement, 'mousemove')
-      .debounceTime(10)
+      .debounceTime(5)
       .subscribe((e: any) => {
         this.data = {
           x: e.offsetX ? e.offsetX : e.layerX,
           y: e.offsetY ? e.offsetY : e.layerY
         };
-
-
-
-        // We need to clone the array to trigger the changes handler
-        // this.data = this.data.slice();
       });
   }
 }
