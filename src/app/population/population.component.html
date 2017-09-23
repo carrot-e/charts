@@ -1,6 +1,10 @@
 <div class="population" #container>
   <div [innerHTML]="map" #mapContainer></div>
   <div class="chart">
-    <svg #svg></svg>
+    <app-svg-base #svg
+                  [height]="chartHeight"
+                  [width]="chartWidth"
+                  [margin]="chartMargin">
+    </app-svg-base>
   </div>
 </div>

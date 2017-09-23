@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { D3, D3Service } from 'd3-ng2-service';
 import { HttpClient } from '@angular/common/http';
 import { PopulatedArea } from '../populated-area';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RegionDensity } from '../region-density';
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-population',
@@ -16,14 +16,14 @@ export class PopulationComponent implements OnInit {
   @ViewChild('mapContainer') mapContainer;
   map;
 
-  private d3: D3;
+  public chartWidth = 612.47321;
+  public chartHeight = 408.0199;
+  public chartMargin = {top: 20, right: 10, bottom: 20, left: 10};
+
   constructor(
-    d3Service: D3Service,
     public http: HttpClient,
     public sanitizer: DomSanitizer
-  ) {
-    this.d3 = d3Service.getD3();
-  }
+  ) { }
 
   ngOnInit() {
     this.http.get('/assets/ukraine.svg', {responseType: 'text'}).subscribe(data => {
@@ -31,13 +31,13 @@ export class PopulationComponent implements OnInit {
     });
 
     this.http.get('/assets/cities1000UA.csv', {responseType: 'text'}).subscribe(data => {
-      this.renderPopulation(this.d3.csvParse(data));
+      this.renderPopulation(d3.csvParse(data));
     });
 
     // TEMP workaround: this is to wait while imported SVG gets rendered
     setTimeout(() => {
       this.http.get('/assets/ukraine-population-density.csv', {responseType: 'text'})
-        .subscribe(data => this.renderDensity(this.d3.csvParse(data)));
+        .subscribe(data => this.renderDensity(d3.csvParse(data)));
     }, 0);
   }
 
@@ -73,7 +73,6 @@ export class PopulationComponent implements OnInit {
   }
 
   renderDensity(data) {
-    const d3 = this.d3;
     const colorScale = d3.scaleSequential(d3.interpolateWarm)
       .domain(d3.extent(data, (d: RegionDensity) => +d.density));
     const svg = d3.select(this.mapContainer.nativeElement).select('svg');
@@ -88,17 +87,9 @@ export class PopulationComponent implements OnInit {
   }
 
   renderPopulation(data) {
-    const d3 = this.d3;
-    const margin = {top: 20, right: 10, bottom: 20, left: 10};
-    const fullWidth = 612.47321;
-    const fullHeight = 408.0199;
-    const width = fullWidth - margin.left - margin.right;
-    const height = fullHeight - margin.top - margin.bottom;
-    const svg = d3.select(this.svg.nativeElement)
-      .attr('width', fullWidth)
-      .attr('height', fullHeight)
-      .append('g')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    const width = this.chartWidth - this.chartMargin.left - this.chartMargin.right;
+    const height = this.chartHeight - this.chartMargin.top - this.chartMargin.bottom;
+    const svg = d3.select(this.svg.el.nativeElement).select('g');
 
     const scaleLongitude = d3.scaleLinear()
       .domain([
@@ -119,18 +110,6 @@ export class PopulationComponent implements OnInit {
       .domain(d3.extent(data, (d: PopulatedArea) => +d.population))
       .range([0, 20]);
 
-    const radialGradient = svg.append('defs')
-      .append('radialGradient')
-      .attr('id', 'radial-gradient');
-
-    radialGradient.append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#fff');
-
-    radialGradient.append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', 'rgba(255, 255, 255, 0)');
-
     svg.selectAll('.populated-area')
       .data(data)
       .enter()
@@ -138,7 +117,7 @@ export class PopulationComponent implements OnInit {
       .classed('populated-area', true)
       .attr('cx', (d: PopulatedArea) => scaleLongitude(d.longitude))
       .attr('cy', (d: PopulatedArea) => scaleLatitude(d.latitude))
-      .style('fill', 'url(#radial-gradient)')
+      .style('fill', 'rgba(255, 255, 255, 0.8)')
       .transition()
       .duration(250)
       .attr('r', (d: PopulatedArea) => scalePopulation(d.population));
