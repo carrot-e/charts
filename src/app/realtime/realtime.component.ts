@@ -1,6 +1,6 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { D3, D3Service } from 'd3-ng2-service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-realtime',
@@ -8,7 +8,6 @@ import { Observable } from 'rxjs/Rx';
   styleUrls: ['./realtime.component.css']
 })
 export class RealtimeComponent implements OnInit {
-  private d3: D3;
   private parentNativeElement: any;
   private svg;
   private minX = 0;
@@ -29,11 +28,9 @@ export class RealtimeComponent implements OnInit {
   private clock$;
   public isOn = true;
 
-
   @ViewChild('chart') chart;
 
-  constructor(element: ElementRef, d3Service: D3Service) {
-    this.d3 = d3Service.getD3();
+  constructor(element: ElementRef) {
     this.parentNativeElement = element.nativeElement;
   }
 
@@ -67,36 +64,34 @@ export class RealtimeComponent implements OnInit {
   }
 
   renderTick({i, v}) {
-    this.d3
+    d3
       .select('.circles-group')
       .transition()
       .duration(this.dt)
-      .ease(this.d3.easeLinear)
+      .ease(d3.easeLinear)
       .attr('transform', `translate(${-i * this.xScale(this.minX + 1) + this.xScale(this.maxX)})`);
 
-    this.d3.select('.circles-group').append('rect')
+    d3.select('.circles-group').append('rect')
       .attr('x', this.xScale(i))
       .attr('y', this.yScale(v))
       .attr('width', 10)
       .attr('height', this.height - this.yScale(v));
 
     if (i > this.maxX) {
-      this.d3
+      d3
         .select('.circles-group rect:first-child')
         .remove();
     }
   }
 
   renderBase() {
-    this.svg = this.d3.select(this.chart.nativeElement)
+    this.svg = d3.select(this.chart.nativeElement)
       .append('svg')
       .attr('width', this.fullWidth)
       .attr('height', this.fullHeight)
-      .call(this.responsivefy, this.d3)
+      .call(this.responsivefy)
       .append('g')
       .attr('transform', `translate(${this.margin.left}, ${this.margin.top})`);
-
-    const d3 = this.d3;
 
     this.yScale = d3.scaleLinear()
       .domain([this.minY, this.maxY])
@@ -123,7 +118,7 @@ export class RealtimeComponent implements OnInit {
       .attr('transform', `translate(${this.xScale(this.maxX)})`);
   }
 
-  private responsivefy(svg, d3) {
+  private responsivefy(svg) {
     // get container + svg aspect ratio
     const container = d3.select(svg.node().parentNode),
       width = parseInt(svg.style('width'), 10),
