@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BudgetLegendComponent } from './budget-legend.component';
+import { SvgBaseComponent } from '../svg-base/svg-base.component';
 
 describe('BudgetLegendComponent', () => {
   let component: BudgetLegendComponent;
@@ -8,7 +9,7 @@ describe('BudgetLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BudgetLegendComponent ]
+      declarations: [ BudgetLegendComponent, SvgBaseComponent ]
     })
     .compileComponents();
   }));

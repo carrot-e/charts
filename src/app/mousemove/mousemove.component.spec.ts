@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MousemoveComponent } from './mousemove.component';
+import { HeatmapDirective } from '../heatmap.directive';
 
 describe('MousemoveComponent', () => {
   let component: MousemoveComponent;
@@ -8,7 +9,7 @@ describe('MousemoveComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MousemoveComponent ]
+      declarations: [ MousemoveComponent, HeatmapDirective ]
     })
     .compileComponents();
   }));
