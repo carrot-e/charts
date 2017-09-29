@@ -32,7 +32,7 @@ export class BudgetComponent implements OnInit {
     });
   }
 
-  render(data: BudgetItem[]) {
+  render(data: any) {
     data.map(i => {
       i.amount = +i.amount2017;
       return i;

@@ -7,9 +7,9 @@ import * as d3 from 'd3';
   selector: '[appForceSimulation]'
 })
 export class ForceSimulationDirective implements OnChanges, AfterContentInit {
-  svg: d3.Selection<Element, {}, Element, {}>;
-  bubbles: d3.Selection<Element, BudgetItem, Element, {}>;
-  simulation: d3.Simulation<d3.SimulationNodeDatum, d3.SimulationLinkDatum>;
+  svg: any;
+  bubbles: any;
+  simulation: any;
   @Input('forceStrength') forceStrength = 0.03;
   @Input('width') width;
   @Input('height') height;

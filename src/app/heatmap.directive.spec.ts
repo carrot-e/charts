@@ -3,7 +3,7 @@ import { Component, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 @Component({
-  template: `<div hoverfocus appHeatmap></div>`
+  template: `<div appHeatmap></div>`
 })
 class TestHeatmapComponent { }
 
