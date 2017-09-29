@@ -14,6 +14,9 @@ import { ForceSimulationDirective } from './force-simulation.directive';
 import { BudgetLegendComponent } from './budget-legend/budget-legend.component';
 import { MousemoveComponent } from './mousemove/mousemove.component';
 import { HeatmapDirective } from './heatmap.directive';
+import { MapviewComponent } from './mapview/mapview.component';
+import { MapComponent } from './map/map.component';
+import { CanvasComponent } from './canvas/canvas.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -21,6 +24,8 @@ const routes: Routes = [
   { path: 'rx', component: RxComponent },
   { path: 'population', component: PopulationComponent },
   { path: 'mousemove', component: MousemoveComponent },
+  { path: 'mapview', component: MapviewComponent },
+  { path: 'canvas', component: CanvasComponent },
   {
     path: '',
     redirectTo: '/budget',
@@ -39,7 +44,10 @@ const routes: Routes = [
     ForceSimulationDirective,
     BudgetLegendComponent,
     MousemoveComponent,
-    HeatmapDirective
+    HeatmapDirective,
+    MapviewComponent,
+    MapComponent,
+    CanvasComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
