@@ -17,6 +17,7 @@ import { HeatmapDirective } from './heatmap.directive';
 import { MapviewComponent } from './mapview/mapview.component';
 import { MapComponent } from './map/map.component';
 import { CanvasComponent } from './canvas/canvas.component';
+import { Canvas2Component } from './canvas2/canvas2.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'mousemove', component: MousemoveComponent },
   { path: 'mapview', component: MapviewComponent },
   { path: 'canvas', component: CanvasComponent },
+  { path: 'canvas2', component: Canvas2Component },
   {
     path: '',
     redirectTo: '/budget',
@@ -47,7 +49,8 @@ const routes: Routes = [
     HeatmapDirective,
     MapviewComponent,
     MapComponent,
-    CanvasComponent
+    CanvasComponent,
+    Canvas2Component
   ],
   imports: [
     RouterModule.forRoot(routes),
