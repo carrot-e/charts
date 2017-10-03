@@ -18,6 +18,7 @@ import { MapviewComponent } from './mapview/mapview.component';
 import { MapComponent } from './map/map.component';
 import { CanvasComponent } from './canvas/canvas.component';
 import { Canvas2Component } from './canvas2/canvas2.component';
+import { Canvas3Component } from './canvas3/canvas3.component';
 
 const routes: Routes = [
   { path: 'budget', component: BudgetComponent },
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'mapview', component: MapviewComponent },
   { path: 'canvas', component: CanvasComponent },
   { path: 'canvas2', component: Canvas2Component },
+  { path: 'canvas3', component: Canvas3Component },
   {
     path: '',
     redirectTo: '/budget',
@@ -50,7 +52,8 @@ const routes: Routes = [
     MapviewComponent,
     MapComponent,
     CanvasComponent,
-    Canvas2Component
+    Canvas2Component,
+    Canvas3Component
   ],
   imports: [
     RouterModule.forRoot(routes),
